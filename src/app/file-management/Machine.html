@@ -1,0 +1,6 @@
+<div class="machineManagement">
+  <navigation [name]="navigations"></navigation>
+  <div class="machine_content">
+    <module-table [module_table_thead]="module_table_thead" [module_table_tbody]="module_table_body" [module_table_attr]="module_table_attr" [module_table_type]="module_table_type" [module_table_search]="module_table_search" (MachineEvent)="getResult($event)"></module-table>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="login_view" *ngIf="show_login">
+  <div class="login_bg">
+    <h1><img src="../assets/images/title.png" alt="伊士通logo"></h1>
+      <div class="login_form">
+        <ul>
+          <li>
+            <div>
+              <span>账号：</span><input type="text" name="username" placeholder="请在此输入账号" autocomplete="off" #username>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span>密码：</span><input type="password" name="password" placeholder="请在此输入密码" #password>
+            </div>
+          </li>
+          <li>
+            <input type="checkbox" name="shwow_password" id="rememberPassword" checked="checked"><span>十天内自动登录</span>
+          </li>
+        </ul>
+        <button class="btn btn-default" (click)="gotoMap(username,password)">登入</button>
+      </div>
+  </div>
+</div>
+<router-outlet></router-outlet> 
