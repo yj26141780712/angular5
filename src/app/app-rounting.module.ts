@@ -21,39 +21,20 @@ import { AreaManagement } from './file-management/areaManagement';
 import { Employee } from './file-management/employee';
 import { Company } from './file-management/company';
 import { OperationLog } from './file-management/OperationLog';
-import { iLinklogin } from './iLinklogin';
+import { iLinklogin } from './login/iLinklogin';
 import { Client } from './file-management/client';
 
+//update by yangjie 20180502 修改路由配置 home改为懒加载并修改 根页面路由出口
 const routes: Routes = [
-  //{ path: '',redirectTo:'login', pathMatch: 'full'},//path为空，表示指向根目录，默认路由
+  { path: '', redirectTo: '/login', pathMatch: 'full' },//path为空，表示指向根目录，默认路由
   { path: 'login', component: iLinklogin },
-  {
-    path: 'home', component: AppComponent, children: [
-      { path: '', component: IlinkMapComponent },
-      { path: 'home', component: IlinkMapComponent },
-      { path: 'table', component: ProduceListComponent },
-      { path: 'data', component: TimeDataComponent },
-      { path: 'list', component: ProduceTable },
-      { path: 'communi', component: RemotelyComponent },
-      { path: 'stop', component: ShutDown },
-      { path: 'message', component: ParamMessage },
-      { path: 'produce_data', component: ProduceData },
-      { path: 'temp', component: TimelyTemperature },
-      { path: 'lub', component: SmoothMessage },
-      { path: 'Machine_M', component: Machine },
-      { path: 'area', component: AreaManagement },
-      { path: 'employee', component: Employee },
-      { path: 'company', component: Company },
-      { path: 'client', component: Client },
-      { path: 'log', component: OperationLog },
-    ]
-  },
-  // { path:'**',component:IlinkMapComponent}//默认进入哪个界面
+  { path: 'home', loadChildren:"app/home/home.module#HomeModule"},
+  { path: '**', component: iLinklogin }//默认进入哪个界面 
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes, { useHash: false })
   ],
   exports: [
     RouterModule

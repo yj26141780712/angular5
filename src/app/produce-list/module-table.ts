@@ -827,15 +827,17 @@ export class ModuleTable implements OnInit {
       cancelButtonText: '取消',
       confirmButtonColor: "#DD6B55",
     }).then((result) => {
-      let _url = this.url + 'apideviceDel.action?companyId=' + this.companyid + '&deviceId=' + this.page_data[num].id;
-      //console.log(_url);
-      this.http.get(_url)
-        .subscribe(res => {
-          console.log(res.json());
-          if (res.json().code == 200) {
-            this.MachineEvent.emit("ok");
-          }
-        })
+      if (result.value) {
+        let _url = this.url + 'apideviceDel.action?companyId=' + this.companyid + '&deviceId=' + this.page_data[num].id;
+        console.log(_url, result);
+        this.http.get(_url)
+          .subscribe(res => {
+            console.log(res.json());
+            if (res.json().code == 200) {
+              this.MachineEvent.emit("ok");
+            }
+          })
+      }
     }).catch(swal.noop);
   }
   //编辑   //add by yangjie 20180427
@@ -854,6 +856,7 @@ export class ModuleTable implements OnInit {
       this.editMachineBcck(num, _data_area, _data_company);
     });
   }
+
   editMachineBcck(num, data_area, data_company) { //add by yangjie 20180427 
     if (data_area && data_company) {
       let _machine = this.page_data[num];
@@ -951,6 +954,42 @@ export class ModuleTable implements OnInit {
   }
   //指定工厂
   setCompany(num) {
+    this.http.get(Global.domain + 'api/apishowClients.action?companyId=' + this.companyid)
+      .subscribe(res => {
+        let _json = res.json();
+        if (_json.code == 200) {
+          console.log(_json);
+          let _factory = "";
+          for(let obj of res.json().obj){
+            _factory +=`<option value="${obj.clientId}">${obj.clientName}</option>`;
+          }
+          let _html = `<style>
+          .saleFactory {font-size:16px;}
+          .saleFactory label{width:37%;text-align:right;}
+          .saleFactory>li{line-height:30px;text-align:left;margin-bottom:10px;}
+       </style>
+       <ul class="saleFactory">
+         <li><label>塑料厂: </label><select id="proxy_com">
+         <option>无</option>
+         ${_factory}
+       </select>
+       </ul>`;
+          swal({
+            title: "指定工厂",
+            width: '600px',
+            html: _html,
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: '保存',
+            cancelButtonText: '取消',
+            position: 'center'
+          }).then(result => {
+            if (result.value) {
+
+            }
+          })
+        }
+      });
   }
   //新增片区
   addArea() {

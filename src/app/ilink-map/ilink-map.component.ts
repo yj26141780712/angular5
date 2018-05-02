@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import {
-  Router
-} from '@angular/router';
+import { Router } from '@angular/router';
+
 import * as echarts from 'echarts';//引入echarts的变量
 import * as moment from 'moment';
 import * as $ from 'jquery';
@@ -14,6 +13,10 @@ declare let BMap, BMapLib;
   styleUrls: ['./ilink-map.component.scss']
 })
 export class IlinkMapComponent implements OnInit {
+  countBtnSelect: string = "day"; //当前选中机器运行数按钮
+  countBtn: Array<any>; //机器运行数按钮
+  typeBtnSelect: string = "year"; //当前选中机器类型占比按钮
+  typeBtn: Array<any>; //机器类型占比按钮
   MachineCount: any = { total: 0, running: 0, service: 0 };
   company_id: any;//当前账户公司id
   point_array: any = [];//当前账号在地图上的信息
@@ -23,13 +26,24 @@ export class IlinkMapComponent implements OnInit {
   constructor(private http: Http, private router: Router) {
   }
   ngOnInit() {
-    this.m_propor();
-    this.run_m();
+    this.countBtn = this.typeBtn = [
+      { name: "day", title: "今日" },
+      { name: "month", title: "本月" },
+      { name: "season", title: "本季" },
+      { name: "year", title: "今年" },
+    ]
+    this.run_m(this.countBtnSelect);
+    this.m_propor(this.typeBtnSelect);
     this.company_id = localStorage.getItem('companyid');
     this.getBaiduMap(() => {
       this.baiduMap(this.point_array, this.area_array);
     });
   }
+  /**
+   * 生成百度地图
+   * @param data 模拟坐标
+   * @param area 地区
+   */
   baiduMap(data, area) {
     var that = this;
     var map = new BMap.Map("ilink_baiduMap");
@@ -77,8 +91,6 @@ export class IlinkMapComponent implements OnInit {
       marker.number = item.data.number;//采集器编号
       markers.push(marker);
     }
-    console.log(point_array.length);
-    console.log(point_array);
     for (var i = 0; i < point_array.length; i++) {
       addMarker(point_array[i]);
     }
@@ -138,93 +150,156 @@ export class IlinkMapComponent implements OnInit {
       })
     }
   }
-  run_m() {
-    let run_m_ech = <HTMLDivElement>document.getElementById('run_m_ech');
-    var run_m = echarts.init(run_m_ech);
-    var option = {
-      tooltip: {
-        trigger: 'axis',
-        formatter: '{c}'
-      },//信息提示框
-      grid: {
-        top: '5%',
-        left: '3%',
-        right: '4%',
-        bottom: '1%',
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: ['0时', '3时', '6时', '9时', '12时', '15时', '18时', '21时', '24时']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          name: '邮件营销',
-          type: 'line',
-          stack: '总量',
-          data: [2, 2, 2, 4, 4, 4],
-          itemStyle: {
-            normal: {
-              color: "#0178bc"
-            }
-          },
-          areaStyle: {
-            normal: {
-              color: '#9ed8fd'
-            }
-          },
-          label: {
-
-          }
-        }
-      ]
-    };
-    run_m.setOption(option);
+  /**
+   * 机器运行数按钮点击事件
+   * @param name 按钮名字
+   */
+  countSelect(name: string) {
+    this.countBtnSelect = name;
+    this.run_m(this.countBtnSelect);
   }
-  m_propor() {
-    let m_propo_ech = <HTMLDivElement>document.getElementById('m_propo_ech');
-    var run_m = echarts.init(m_propo_ech);
-    var option = {
-      legend: {
-        orient: 'horizontal',
-        x: 'left',
-        y: 'center',
-        data: ['328机型']
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['65%', '80%'],
-          label: {
-            normal: {
-              formatter: '{b}\n{c}',
-              rich: {
-                b: {
-                  fontSize: 16,
-                  lineHeight: 33
+  /**
+   * 生成机器运行数图表
+   * @param name 按钮名字
+   */
+  run_m(name: string) {
+    name = name || "day";
+    this.http.get(Global.domain + "api/apilineChart.action?companyId=" + (this.company_id || '') + "&tag=" + name)
+      .subscribe(res => {
+        let data = res.json();
+        if (data.code == 200) {
+          let dataX = [];
+          let dataY = [];
+          for (let arr of data.obj) {
+            if (arr) {
+              dataX.push(arr[0]);
+              if (arr[1] >= 0) dataY.push(arr[1]);
+            }
+          }
+          let run_m_ech = <HTMLDivElement>document.getElementById('run_m_ech');
+          var run_m = echarts.init(run_m_ech);
+          var option = {
+            tooltip: {
+              trigger: 'axis',
+              formatter: '{c}'
+            },//信息提示框
+            grid: {
+              top: '5%',
+              left: '3%',
+              right: '4%',
+              bottom: '1%',
+              containLabel: true
+            },
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: dataX
+            },
+            yAxis: {
+              type: 'value',
+              minInterval: 1
+            },
+            series: [
+              {
+                name: '机器运行数',
+                type: 'line',
+                stack: '总量',
+                data: dataY,
+                itemStyle: {
+                  normal: {
+                    color: "#0178bc"
+                  }
                 },
-                c: {
-                  textAlign: "center"
+                areaStyle: {
+                  normal: {
+                    color: '#9ed8fd'
+                  }
+                },
+                label: {
+
                 }
               }
-            }
-          },
-          data: [
-            { value: 4, name: '328机型' }
-          ],
-          itemStyle: {
-            normal: {
-              color: "#0178bc"
-            }
-          }
+            ]
+          };
+          run_m.setOption(option);
         }
-      ]
-    };
-    run_m.setOption(option);
+      });
+
+  }
+  /**
+   * 机器占比数按钮点击事件
+   * @param name 按钮名称
+   */
+  typeSelect(name: string) {
+    this.typeBtnSelect = name;
+    console.log(name);
+    this.m_propor(name);
+  }
+  /**
+   * 生成机器占比数图表
+   * @param name 按钮名称
+   */
+  m_propor(name: string) {
+    this.http.get(Global.domain + "api/apipieChart.action?companyId=" + (this.company_id || '') + "&tag=" + name)
+      .subscribe(res => {
+        let data = res.json();
+        console.log(data);
+        if (data.code == 200) {
+          let pieData = [];
+          let legendData = [];
+          //let colorData = [];
+          for (let obj of data.obj) {
+            pieData.push({
+              name: obj.label,
+              value: obj.data,
+              itemStyle: {
+                normal: {
+                  color: obj.color
+                }
+              }
+            });
+            legendData.push(obj.label);
+            //colorData.push(obj.color);
+          }
+          console.log(pieData);
+          let m_propo_ech = <HTMLDivElement>document.getElementById('m_propo_ech');
+          var run_m = echarts.init(m_propo_ech);
+          var option = {
+            tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+              orient: 'vertical',
+              x: 'left',
+              y: 'center',
+              data: legendData
+            },
+            series: [
+              {
+                name:'机器类型占比',
+                type: 'pie',
+                radius: ['45%', '60%'],
+                label: {
+                  normal: {
+                    formatter: '{b}\n数量:{c}',
+                    rich: {
+                      b: {
+                        fontSize: 16,
+                      },
+                      c: {
+                        textAlign: "left"
+                      }
+                    }
+                  }
+                },
+                data: pieData
+              }
+            ]
+          };
+          run_m.setOption(option);
+        }
+      });
   }
   getBaiduMap(callback) {
     this.http.get(Global.domain + 'api/apideviceList.action').subscribe((res: Response) => {
@@ -262,8 +337,8 @@ export class IlinkMapComponent implements OnInit {
       }
       callback();
     });
-    this.http.get(Global.domain + 'api/apiareas.action?companyId=' + this.company_id ).subscribe((res: Response) => {
-      console.log('yangjie',res.json());
+    this.http.get(Global.domain + 'api/apiareas.action?companyId=' + this.company_id).subscribe((res: Response) => {
+      console.log('yangjie', res.json());
       for (var i = 0; i < res.json().obj.length; i++) {
         if (res.json().obj[i] && res.json().obj[i].note) {
           var array = [];
