@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {NavigationComponent} from '../produce-list/navigation';
 import { Headers, Http,Response,RequestOptions} from '@angular/http';
 import {SearchMachineidComponent} from '../search-machineid/search-machineid.component';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'employee',
   templateUrl: './employee.html',
@@ -17,7 +17,7 @@ export class Employee implements OnInit {
   module_table_attr:Array<string>=['user_id','user_message','company','username','phone','note','state'];
   module_table_type:string="employee";
   module_table_search={search:"user_id",name:"用户账号"}
-  constructor(private http:Http) { }
+  constructor(private http:Http) { } 
 
   ngOnInit() {
     this.companyid=localStorage.getItem('companyid');

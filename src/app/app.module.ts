@@ -14,6 +14,8 @@ import { AppRoutingModule } from './app-rounting.module';
 import { AppComponent } from './app.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { HomeComponent } from './home/home.component';
+import { AuthGuard } from './tool/services/auth-guard.service';
+import { GlobalService } from './tool/services/global';
 
 declare var $: any;
 
@@ -28,7 +30,7 @@ declare var $: any;
     HttpModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [AuthGuard,GlobalService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

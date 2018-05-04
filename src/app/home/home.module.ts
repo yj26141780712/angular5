@@ -24,13 +24,21 @@ import { Client } from '../file-management/client';
 import { HomeComponent } from './home.component';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { FittingComponent } from '../file-management/fitting/fitting.component';
+
+import { ModalModule,PaginationModule } from 'ngx-bootstrap';
+import { SetMachineComponent } from '../file-management/set-machine/set-machine.component';
+import { KeysPipe } from '../tool/pipe/keys.pipe';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     HttpModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    PaginationModule.forRoot(),
+    ModalModule.forRoot()
   ],
   declarations: [
     HomeComponent,    
@@ -53,8 +61,14 @@ import { HttpModule } from '@angular/http';
     Employee,
     Company,
     OperationLog,
-    Client
-  ]
+    Client,
+    FittingComponent,
+    SetMachineComponent,
+    KeysPipe,
+    KeysPipe,
+  ],
+  entryComponents:[FittingComponent,SetMachineComponent]
 })
 export class HomeModule { 
+
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationComponent } from '../produce-list/navigation';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'Machine',
   templateUrl: './Machine.html',
@@ -61,6 +61,7 @@ export class Machine implements OnInit {
   }
   getResult(msg) {
     this.getMachineData(() => {
+      console.log(this.data);
       var array = [];
       for (var i = 0; i < this.data.length; i++) {
         var item = { m_id: "", m_name: "", m_type: "", c_id: "", o_name: "", o_date: "", area: "", o_company: "", d_company: "", s_company: "", remarks: "", id: "", x: "", y: "" };
@@ -68,6 +69,7 @@ export class Machine implements OnInit {
         item.m_name = this.data[i].name;
         item.m_type = this.data[i].modelName;
         item.c_id = this.data[i].monitorid;
+        item.o_name =this.data[i].cpersonnel || ''; //add by yangjie 20180504
         if (this.data[i].ddate != null) {
           item.o_date = this.data[i].ddate.substring(0, 10);
         }

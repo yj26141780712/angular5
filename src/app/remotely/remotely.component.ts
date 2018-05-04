@@ -5,7 +5,7 @@ import {SearchMachineidComponent} from '../search-machineid/search-machineid.com
 import { Headers, Http,Response,RequestOptions} from '@angular/http';
 import * as $ from 'jquery';
 import * as AlertModule from 'bootstrap';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 
 @Component({
   selector: 'app-remotely',

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { NavigationComponent } from '../produce-list/navigation';
 import { SearchMachineidComponent } from '../search-machineid/search-machineid.component';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'areaManagement',
   templateUrl: './areaManagement.html',

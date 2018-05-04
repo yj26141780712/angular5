@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import * as echarts from 'echarts';//引入echarts的变量
 import * as moment from 'moment';
 import * as $ from 'jquery';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 declare let BMap, BMapLib;
 @Component({
   selector: 'app-ilink-map',
@@ -26,6 +26,7 @@ export class IlinkMapComponent implements OnInit {
   constructor(private http: Http, private router: Router) {
   }
   ngOnInit() {
+    this.company_id = localStorage.getItem('companyid');
     this.countBtn = this.typeBtn = [
       { name: "day", title: "今日" },
       { name: "month", title: "本月" },
@@ -34,7 +35,6 @@ export class IlinkMapComponent implements OnInit {
     ]
     this.run_m(this.countBtnSelect);
     this.m_propor(this.typeBtnSelect);
-    this.company_id = localStorage.getItem('companyid');
     this.getBaiduMap(() => {
       this.baiduMap(this.point_array, this.area_array);
     });
@@ -51,7 +51,7 @@ export class IlinkMapComponent implements OnInit {
     var markers = [];
     var point_array = [].concat(data);//模拟坐标
     // 创建点坐标  
-    map.centerAndZoom(point, 15);
+    map.centerAndZoom(point, 6);
     map.enableScrollWheelZoom(true);//可滚动缩放
 
     function addMarker(item) {//地图添加标注
@@ -140,11 +140,11 @@ export class IlinkMapComponent implements OnInit {
     {
       var bdary = new BMap.Boundary();
       bdary.get(city, function (res) {
-        //console.log(res);
+        console.log(res);
         var count = res.boundaries.length;
         for (var i = 0; i < count; i++) {
           var ply = new BMap.Polygon(res.boundaries[i], { strokeWeight: 1, strokeColor: "#0375ff", fillOpacity: 1, enableMassClear: true });//建立多边形
-          // map.addOverlay(ply);//添加覆盖物
+           map.addOverlay(ply);//添加覆盖物
           //map.setViewport(ply.getPath());//调整视野
         }
       })
@@ -240,6 +240,7 @@ export class IlinkMapComponent implements OnInit {
    * @param name 按钮名称
    */
   m_propor(name: string) {
+    console.log(this.company_id);
     this.http.get(Global.domain + "api/apipieChart.action?companyId=" + (this.company_id || '') + "&tag=" + name)
       .subscribe(res => {
         let data = res.json();
@@ -338,7 +339,6 @@ export class IlinkMapComponent implements OnInit {
       callback();
     });
     this.http.get(Global.domain + 'api/apiareas.action?companyId=' + this.company_id).subscribe((res: Response) => {
-      console.log('yangjie', res.json());
       for (var i = 0; i < res.json().obj.length; i++) {
         if (res.json().obj[i] && res.json().obj[i].note) {
           var array = [];
@@ -348,6 +348,7 @@ export class IlinkMapComponent implements OnInit {
           }
         }
       }
+      console.log(this.area_array);
       this.area_array = Array.from(new Set(this.area_array)); //add by yangjie 20180426 去重复
       this.MachineCount.service = this.area_array.length;
     })

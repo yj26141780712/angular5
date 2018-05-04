@@ -5,7 +5,7 @@ import { Headers, Http,Response,RequestOptions} from '@angular/http';
 import * as echarts from 'echarts';//引入echarts的变量
 import * as moment from 'moment';
 import * as $ from 'jquery';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'timelyTemperature',
   templateUrl: './timelyTemperature.html',

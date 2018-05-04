@@ -4,7 +4,7 @@ import {SearchMachineidComponent} from '../search-machineid/search-machineid.com
 import {ModuleTable} from '../produce-list/module-table';
 import { Headers, Http,Response,RequestOptions} from '@angular/http';
 import * as moment from 'moment';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'produceData',
   templateUrl: './produceData.html',
@@ -34,8 +34,8 @@ export class ProduceData implements OnInit {
         item.id=i+1;
         item.time=moment(res.json().obj[i].mtime).utc().zone(-8).format('YYYY-MM-DD HH:mm:ss');
         item.shot_time=res.json().obj[i].params[1].value;
-        item.shot_pos=res.json().obj[i].params[2].value;
-        item.keep_pos=res.json().obj[i].params[4].value;//保压起点
+        item.shot_pos=Number(res.json().obj[i].params[2].value).toFixed(1);
+        item.keep_pos=Number(res.json().obj[i].params[4].value).toFixed(1);//保压起点
         item.canliao_pos=res.json().obj[i].params[7].value;//这里没有实际的值
         item.sto_pos=res.json().obj[i].params[7].value;//储料
         array.push(item);

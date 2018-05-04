@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import * as $ from 'jquery';
 import swal from 'sweetalert2';//sweetalert2
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 
 @Component({
   selector: 'app-search-machineid',
@@ -13,7 +13,7 @@ import { Global } from '../services/global';
 export class SearchMachineidComponent implements OnInit {
   data: any;
   companyid: any;
-  MachineDatas: any;//所有的数据
+  MachineDatas: any;//所有的数据 
   page_data: any;//当页数据
   current_page: number = 1;//当前页数
   total_count: number;//总页数

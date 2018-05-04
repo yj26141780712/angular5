@@ -1,4 +1,4 @@
-import { Global } from './../services/global';
+import { Global } from './../tool/services/global';
 import { Component, OnInit } from '@angular/core';
 import { NavigationComponent } from '../produce-list/navigation';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';

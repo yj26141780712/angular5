@@ -4,7 +4,7 @@ import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as echarts from 'echarts';
 import * as $ from 'jquery';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 
 @Component({
   selector: 'app-time-data',

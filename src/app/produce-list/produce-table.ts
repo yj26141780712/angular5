@@ -3,7 +3,7 @@ import { Headers, Http,Response,RequestOptions} from '@angular/http';
 import {NavigationComponent} from './navigation';
 
 import {ModuleTable} from './module-table';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'produce-table',
   templateUrl: './produce-table.html',
@@ -13,7 +13,7 @@ export class ProduceTable implements OnInit {
   companyid:any;
   Machine_data:any;
   navigations:Array<string>=['主页','监控管理','机器列表'];
-  module_table_thead:Array<string>=['编号','名称','机器状态','机器动作','马达动作','电热状态','生产模数','全程计时(秒)','开机时间(天)'];
+  module_table_thead:Array<string>=['编号','名称','机器状态','机器动作','马达动作','电热状态','生产模数','全程计时(时)','开机时间(天)'];
   module_table_body:Array<Object>=[];
   module_table_attr:Array<string>=['id','name','state','action','motor','hot','count','time','open'];
   module_table_search={search:"id",name:"编号"}
@@ -35,8 +35,10 @@ export class ProduceTable implements OnInit {
         Machine_item.motor=this.Machine_data[i].motor;
         Machine_item.hot=this.Machine_data[i].electricHeat;
         Machine_item.count=this.Machine_data[i].modelNum;
-        Machine_item.time=this.Machine_data[i].totalhour;//全程计时小数位
-        Machine_item.open=this.Machine_data[i].fulltime.toFixed(1);
+        Machine_item.time=this.Machine_data[i].fulltime.toFixed(1);//全程计时小数位
+        Machine_item.open=this.Machine_data[i].workhour;
+        // Machine_item.time=this.Machine_data[i].totalhour;//全程计时小数位
+        // Machine_item.open=this.Machine_data[i].fulltime.toFixed(1);
         array.push(Machine_item);
       }
       this.module_table_body=[].concat(array);

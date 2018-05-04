@@ -18,10 +18,13 @@ import { Employee } from '../file-management/employee';
 import { Company } from '../file-management/company';
 import { Client } from '../file-management/client';
 import { OperationLog } from '../file-management/OperationLog';
+import { AuthGuard } from '../tool/services/auth-guard.service';
 
 const homeRoutes: Routes = [
   {
-    path: '', component: HomeComponent,
+    path: '', 
+    component: HomeComponent,
+    canActivate:[AuthGuard],
     children: [
       { path: '', component: IlinkMapComponent },
       { path: 'home', component: IlinkMapComponent },

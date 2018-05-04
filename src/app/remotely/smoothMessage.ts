@@ -3,7 +3,7 @@ import {NavigationComponent} from '../produce-list/navigation';
 import {SearchMachineidComponent} from '../search-machineid/search-machineid.component';
 import { Headers, Http,Response,RequestOptions} from '@angular/http';
 import * as moment from 'moment';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'smoothMessage',
   templateUrl: './smoothMessage.html',
@@ -26,7 +26,6 @@ export class SmoothMessage implements OnInit {
   }
   getMonitorEvent(mid){
     this.current_mid=mid;
-    console.log(123);
     this.getSmoothData(()=>{
       var array=[];
       //对对象重新封装

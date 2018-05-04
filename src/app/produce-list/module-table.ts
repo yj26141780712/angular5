@@ -1,8 +1,12 @@
+import { SetMachineComponent } from '../file-management/set-machine/set-machine.component';
+import { GlobalService } from './../tool/services/global';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import swal from 'sweetalert2';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import * as $ from 'jquery';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { FittingComponent } from '../file-management/fitting/fitting.component';
 
 //update by yangjie 修改页面显示 20180427
 //注塑机管理
@@ -31,9 +35,9 @@ import { Global } from '../services/global';
       <tbody>
         <tr *ngFor="let content of page_data;let num=index">
           <td *ngFor='let attr of module_table_attr'>{{content[attr]}}</td>
-          <td *ngSwitchCase="'machine'" class="machine"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editMachine(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="delMachine(num)"></i><i class="fa fa-cogs" aria-hidden="true" title="设备配件"></i><i class="fa fa-usd" aria-hidden="true" title="指定工厂" (click)='setCompany(num)'></i></td>
+          <td *ngSwitchCase="'machine'" class="machine"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editMachine(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="delMachine(num)"></i><i class="fa fa-cogs" aria-hidden="true" title="设备配件" (click)='setFitting(num)'></i><i class="fa fa-usd" aria-hidden="true" title="指定工厂" (click)='setCompany(num)'></i></td>
           <td *ngSwitchCase="'area'"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editArea(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="delArea(num)"></i></td>
-          <td *ngSwitchCase="'company'"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editCompany(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="deleteCompany(num)"></i><i class="fa fa-cogs" aria-hidden="true" title="配置拥有机型"></i><i class="fa fa-user" aria-hidden="true" title="配置管理员账号" (click)='setAdmin(num)'></i></td>
+          <td *ngSwitchCase="'company'"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editCompany(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="deleteCompany(num)"></i><i class="fa fa-cogs" aria-hidden="true" title="配置拥有机型" (click)='setMachine(num)'></i><i class="fa fa-user" aria-hidden="true" title="配置管理员账号" (click)='setAdmin(num)'></i></td>
           <td *ngSwitchCase="'employee'"><i class="fa fa-pencil" aria-hidden="true" (click)="changeEmployee(num)" title="编辑"></i><i class="fa fa-power-off" *ngIf="content.state=='正常'" aria-hidden="true" (click)="stopEmployee(num)" title="停用"></i><i class="fa fa-power-off green" *ngIf="content.state=='停用'" aria-hidden="true" (click)="RunEmployee(num)" title="启用"></i><i class="fa fa-repeat" aria-hidden="true" title="重置密码" (click)="resetPsd(num)"></i></td>
           <td *ngSwitchCase="'client'"><i class="fa fa-pencil" aria-hidden="true" (click)="changeClient(num)" title="编辑"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="deleteClient(num)"></i></td>
         </tr>
@@ -60,6 +64,7 @@ import { Global } from '../services/global';
   styleUrls: ['./produce-list.component.scss']
 })
 export class ModuleTable implements OnInit {
+  bsModalRef: BsModalRef;
   @Input() module_table_thead: Array<string>;//表头的遍历(中文)
   @Input() module_table_tbody = [];//表身的数据
   @Input() module_table_attr: Array<string>; //表身的属性数组
@@ -83,7 +88,7 @@ export class ModuleTable implements OnInit {
   beginNum: number;
   endNum: number;
   pages: number = 1;  //总页数
-  constructor(private http: Http) {
+  constructor(private http: Http, private gs: GlobalService, private modalService: BsModalService) {
 
   }
 
@@ -292,6 +297,12 @@ export class ModuleTable implements OnInit {
   //修改客户接口
   changeClient(num) {
     //console.log(num);
+    let parent = document.getElementsByClassName('client_content')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr')[num];
+    let clientId = parent.getElementsByTagName('td')[0].innerText;
+    let name = parent.getElementsByTagName('td')[1].innerText;
+    let remark = parent.getElementsByTagName('td')[3].innerText;
+    let status = parent.getElementsByTagName('td')[4].innerText;
+    console.log(parent);
     var html = `
     <style>
        .clientCha{font-size:16px;}
@@ -300,16 +311,16 @@ export class ModuleTable implements OnInit {
        .clientCha>li{line-height:24px;text-align:left;}
     </style>
     <ul class="clientCha">
-      <li><label>塑料厂编号: </label><input type="text" id="clientid" disabled/></li>
-      <li><label>塑料厂名称：</label><input type="text" id="name"/></li>
+      <li><label>塑料厂编号: </label><input type="text" id="clientid" disabled value='${clientId}'/></li>
+      <li><label>塑料厂名称：</label><input type="text" id="name" value='${name}' /></li>
       <li><label style="float:left;">备注信息： </label>
-        <textarea id="" placeholder="备注信息"></textarea>
+        <textarea id="" placeholder="备注信息">${remark}</textarea>
       </li>
       <li>
         <label>状态： </label>
         <select id="status">
-          <option>停用</option>
-          <option>启用</option>
+          <option ${status == '停用' ? 'selected="true"' : ''}>停用</option>
+          <option ${status == '正常' ? 'selected="true"' : ''}>正常</option>
         </select>
       </li>
     </ul>
@@ -322,16 +333,7 @@ export class ModuleTable implements OnInit {
       showCancelButton: true,
       confirmButtonText: '保存',
       cancelButtonText: '取消',
-      position: 'top',
-      onOpen: () => {
-        //获取当前行的值
-        var parent = document.getElementsByClassName('client_content')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr')[num];
-        var clientId = <HTMLInputElement>document.getElementById('clientid');
-        var name = <HTMLInputElement>document.getElementById('name');
-        var status = <HTMLInputElement>document.getElementById('status');
-        clientId.value = parent.getElementsByTagName('td')[0].innerText;
-        name.value = parent.getElementsByTagName('td')[1].innerText;
-      }
+      position: 'top'
     }).then((result) => {
       if (result.value) {
         var clientId = <HTMLInputElement>document.getElementById('clientid');
@@ -510,13 +512,13 @@ export class ModuleTable implements OnInit {
         var role = <HTMLInputElement>document.getElementById('role');
         var phone = <HTMLInputElement>document.getElementById('phone');
         var note = <HTMLInputElement>document.getElementById('note');
-        // this.http.get(this.url+'apiuserEdit.action?user.password='+this.page_data[num].password+'&user.username='+userid.value+'&user.roleid='+role.value+'&user.name='+name.value+'&user.phone='+phone.value+'&user.note='+note.value).subscribe((res:Response)=>{
-        // console.log(res.json());
-        // if(res.json().code==200)
-        // {
-        //   this.EmployeeEvent.emit("ok");
-        // }
-        // })
+        console.log(userid.value, name.value, role.value, phone.value, note.value);
+        this.http.get(this.url + 'apiuserEdit.action?user.password=' + this.page_data[num].password + '&user.username=' + userid.value + '&user.roleid=' + role.value + '&user.name=' + name.value + '&user.phone=' + phone.value + '&user.note=' + note.value).subscribe((res: Response) => {
+          console.log(res.json());
+          if (res.json().code == 200) {
+            this.EmployeeEvent.emit("ok");
+          }
+        })
       }
     }).catch(swal.noop);
   }
@@ -538,7 +540,6 @@ export class ModuleTable implements OnInit {
       }
     }).catch(swal.noop);
   }
-
   //新增公司
   addCompany(num) {
     var html =
@@ -652,6 +653,10 @@ export class ModuleTable implements OnInit {
       }
     }).catch(swal.noop);
   }
+  //配置拥有机型
+  setMachine(num) {
+    this.bsModalRef = this.modalService.show(SetMachineComponent);
+  }
   //公司-配置管理员
   setAdmin(num) {
     var html = `<style>
@@ -685,6 +690,7 @@ export class ModuleTable implements OnInit {
         var id = document.getElementById('userid');
         this.http.get(this.url + 'apifindAdmin.action?companyId=' + this.page_data[num].id).subscribe((res: Response) => {
           if (res.json().code == 200) {
+            console.log(res.json());
             username.value = res.json().obj.username;
             Name.value = res.json().obj.name;
             phone.value = res.json().obj.phone;
@@ -710,6 +716,7 @@ export class ModuleTable implements OnInit {
       }
     }).catch(swal.noop);
   }
+
   //新增注塑机
   addMachine() {  //add by yangjie 20180427 修改下拉框
     let _url_model = "";
@@ -860,7 +867,6 @@ export class ModuleTable implements OnInit {
   editMachineBcck(num, data_area, data_company) { //add by yangjie 20180427 
     if (data_area && data_company) {
       let _machine = this.page_data[num];
-      console.log(_machine);
       let _option_area = '';
       let _option_company = '';
       for (const obj of data_area) {
@@ -869,9 +875,9 @@ export class ModuleTable implements OnInit {
           _option_area += `<option value="${obj.id}" ${obj.name == _machine.area ? "selected='selected'" : ""} >${obj.name}</option>`;
         }
       }
-      console.log(_option_area);
       for (const obj of data_company) {
-        _option_company += `<option value="${obj.id}" ${obj.name == _machine.name ? "selected='selected'" : ""} >${obj.name}</option>`;
+        console.log(obj,_machine);
+        _option_company += `<option value="${obj.id}" ${obj.name == _machine.d_company ? "selected='selected'" : ""} >${obj.name}</option>`;
       }
       var html =
         `<style>
@@ -896,13 +902,13 @@ export class ModuleTable implements OnInit {
       <li><label>出厂日期：</label><input type="date" id="out_date" placeholder="出厂日期" value='${_machine.o_date}' /></li>
       <li><label>代理公司：</label>
         <select id="proxy_com">
-          <option>无</option>
+          <option value='0'>无</option>
           ${_option_company}
         </select>
       </li>
       <li><label>所属片区：</label>
         <select id="area">
-        <option>无</option>
+        <option value='0'>无</option>
           ${_option_area} 
         </select>
       </li>
@@ -926,8 +932,24 @@ export class ModuleTable implements OnInit {
         confirmButtonText: '保存',
         cancelButtonText: '取消',
         position: 'top',
-        onOpen: () => {
-          let _machine_id = _machine.id;
+        // onOpen: () => {
+        //   let _machine_id = _machine.id;
+        //   let userid = localStorage.getItem('id');
+        //   let Mid = <HTMLInputElement>document.getElementById('Mid');
+        //   let MName = <HTMLInputElement>document.getElementById('MName');
+        //   let Mtype = <HTMLInputElement>document.getElementById('status');
+        //   let moniter = <HTMLInputElement>document.getElementById('moniter');
+        //   let out_name = <HTMLInputElement>document.getElementById('out_name');
+        //   let out_date = <HTMLInputElement>document.getElementById('out_date');
+        //   let proxy_com = <HTMLInputElement>document.getElementById('proxy_com');
+        //   let area = <HTMLInputElement>document.getElementById('area');
+        //   let GPS = <HTMLInputElement>document.getElementById('GPS');
+        //   let remarks = <HTMLInputElement>document.getElementById('remarks');
+
+        // }
+      }).then(result => {
+        if (result.value) {
+          //   let _machine_id = _machine.id;
           let userid = localStorage.getItem('id');
           let Mid = <HTMLInputElement>document.getElementById('Mid');
           let MName = <HTMLInputElement>document.getElementById('MName');
@@ -939,29 +961,49 @@ export class ModuleTable implements OnInit {
           let area = <HTMLInputElement>document.getElementById('area');
           let GPS = <HTMLInputElement>document.getElementById('GPS');
           let remarks = <HTMLInputElement>document.getElementById('remarks');
-          //需要添加修改接口调用
-        }
-      }).then(result => {
-        if (result.value) {
-
+          let _url = `${this.url}apideviceEdit.action?device.sn=${Mid.value}&device.name=${MName.value}`
+            + `&device.modelid=${Mtype.value}&device.monitorid=${moniter.value}`
+            + `&device.cpersonnel=${out_name.value}&device.ddate=${out_date.value}`
+            + `&device.proxyid=${proxy_com.value}&device.areaid=${area.value}`
+            + `&device.note=${remarks.value}&device.gps=${GPS.value}`
+            + `&device.companyid=${this.companyid}&device.luser=${userid}`
+            + `&device.id=${_machine.id}`;
+          console.log(_url);
+          this.http.get(_url).subscribe(res => {
+            if (res.json().code == 200) {
+              this.MachineEvent.emit("ok");
+            }
+          })
+          // this.gs.httpGet(_url, {}, json => {
+          //   if (json.code == 200) {
+          //     this.MachineEvent.emit("ok");
+          //   }
+          // })
         }
       })
     }
   }
-  //设备配机
-  MachineSet() {
-
+  //设备配机 add by yangjie 20180503
+  setFitting(num) {
+    let _machine = this.page_data[num];
+    //console.log(123,_machine);
+    const initialState = { //modal 传参
+      machine: _machine
+    };
+    this.bsModalRef = this.modalService.show(FittingComponent, { initialState });
+    //this.bsModalRef.content.closeBtnName = 'Close';
   }
   //指定工厂
   setCompany(num) {
+    let _machine = this.page_data[num];
     this.http.get(Global.domain + 'api/apishowClients.action?companyId=' + this.companyid)
       .subscribe(res => {
         let _json = res.json();
         if (_json.code == 200) {
           console.log(_json);
           let _factory = "";
-          for(let obj of res.json().obj){
-            _factory +=`<option value="${obj.clientId}">${obj.clientName}</option>`;
+          for (let obj of res.json().obj) {
+            _factory += `<option value="${obj.clientId}">${obj.clientName}</option>`;
           }
           let _html = `<style>
           .saleFactory {font-size:16px;}

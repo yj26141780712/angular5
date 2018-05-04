@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
 
 import { NavigationComponent } from './navigation';
-import { Global } from '../services/global';
+import { Global } from '../tool/services/global';
 @Component({
   selector: 'app-produce-list',
   templateUrl: './produce-list.component.html',
