@@ -29,7 +29,7 @@ export class GlobalService {
                     str += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
                 }
             }
-            str = '?' + str.substring(0, str.length - 1);
+            str = str.length > 0 ? ('?' + str.substring(0, str.length - 1)) : '';
         }
         return str;
     }
@@ -37,6 +37,7 @@ export class GlobalService {
         if (loader) {
             //开启加载效果
         }
+        console.log(url + this.encode(params));
         this.http.get(url + this.encode(params)).toPromise().then(res => {
             let json = res.json();
             if (loader) {
@@ -69,6 +70,6 @@ export class GlobalService {
     }
 
     private httpGetALL(urlArr: Array<string>, callback) {
-        
+
     }
 }

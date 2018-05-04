@@ -974,11 +974,11 @@ export class ModuleTable implements OnInit {
               this.MachineEvent.emit("ok");
             }
           })
-          // this.gs.httpGet(_url, {}, json => {
-          //   if (json.code == 200) {
-          //     this.MachineEvent.emit("ok");
-          //   }
-          // })
+          this.gs.httpGet(_url, {}, json => {
+            if (json.code == 200) {
+              this.MachineEvent.emit("ok"); 
+            }
+          })
         }
       })
     }
