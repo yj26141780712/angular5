@@ -22,19 +22,22 @@ import { Company } from '../file-management/company';
 import { OperationLog } from '../file-management/OperationLog';
 import { Client } from '../file-management/client';
 import { HomeComponent } from './home.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { FittingComponent } from '../file-management/fitting/fitting.component';
 
 import { ModalModule,PaginationModule } from 'ngx-bootstrap';
 import { SetMachineComponent } from '../file-management/set-machine/set-machine.component';
 import { KeysPipe } from '../tool/pipe/keys.pipe';
+import { RegisterComponent } from '../register/register.component';
+import { FactoryInfoComponent } from '../file-management/factory-info/factory-info.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     HomeRoutingModule,
     PaginationModule.forRoot(),
@@ -66,8 +69,9 @@ import { KeysPipe } from '../tool/pipe/keys.pipe';
     SetMachineComponent,
     KeysPipe,
     KeysPipe,
+    FactoryInfoComponent,
   ],
-  entryComponents:[FittingComponent,SetMachineComponent]
+  entryComponents:[FittingComponent,SetMachineComponent]  
 })
 export class HomeModule { 
 

@@ -9,8 +9,8 @@
           <li class="menu_list_title">{{item.title}}</li>
           <li *ngFor="let demo of item.list"><a [routerLink]="[demo.rounter]"><i class="fa fa-caret-right" aria-hidden="true"></i>{{demo.name}}</a></li>
         </ul>
-      </div>
-    </li>
+      </div> 
+    </li> 
   </ul>
   <ul *ngIf="!menu_fold" class="menu_unfold">
     <h2>iLink 系统</h2>

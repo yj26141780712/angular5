@@ -19,6 +19,7 @@ import { Company } from '../file-management/company';
 import { Client } from '../file-management/client';
 import { OperationLog } from '../file-management/OperationLog';
 import { AuthGuard } from '../tool/services/auth-guard.service';
+import { FactoryInfoComponent } from '../file-management/factory-info/factory-info.component';
 
 const homeRoutes: Routes = [
   {
@@ -43,6 +44,7 @@ const homeRoutes: Routes = [
       { path: 'company', component: Company },
       { path: 'client', component: Client },
       { path: 'log', component: OperationLog },
+      { path: 'factory', component: FactoryInfoComponent },
     ]
   },
 ];

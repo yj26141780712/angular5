@@ -5,6 +5,8 @@ import * as $ from 'jquery';  //定义jquery
 import swal from 'sweetalert2';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Global } from '../tool/services/global';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { RegisterComponent } from '../register/register.component';
 
 @Component({
   selector: 'iLinklogin',
@@ -18,7 +20,12 @@ export class iLinklogin implements OnInit {
     password: '',
     isAuto: false
   };
-  constructor(private router: Router, private http: Http) {
+  config = {
+    ignoreBackdropClick: true,
+    class:"modal-sm"
+  };
+  bsModalRef: BsModalRef;
+  constructor(private router: Router, private http: Http, private modalService: BsModalService) {
 
   }
   ngOnInit() {
@@ -54,5 +61,11 @@ export class iLinklogin implements OnInit {
       }
     });
   }
+
+  
+  register() {
+    this.bsModalRef = this.modalService.show(RegisterComponent,this.config);
+  }
+
 }
 

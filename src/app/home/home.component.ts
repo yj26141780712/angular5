@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Http } from '@angular/http';
 
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
           },
           {
             i: "fa-file-text-o", title: "档案管理", list: [{ name: "注塑机管理", rounter: "Machine_M" }, { name: "公司管理", rounter: "company" }, { name: "片区管理", rounter: "area" },
-            { name: "用户管理", rounter: "employee" }, { name: "客户管理", rounter: "client" }, { name: "操作日志", rounter: "log" }], color: "green"
+            { name: "用户管理", rounter: "employee" }, { name: "客户管理", rounter: "client" }, { name: "操作日志", rounter: "log" },{ name: "公司信息", rounter: "factory" } ], color: "green"
           }];
         break;
       case "工厂管理员":
@@ -43,8 +43,8 @@ export class HomeComponent implements OnInit {
         { i: "fa-info-circle", title: "远程详情", list: [{ name: "参数信息", rounter: "message" }, { name: "生产数据", rounter: "produce_data" }, { name: "实时温度", rounter: "temp" }, { name: "润滑信息", rounter: "lub" }], color: "orange" },
         {
           i: "fa-file-text-o", title: "档案管理", list: [{ name: "注塑机管理", rounter: "Machine_M" },
-          { name: "用户管理", rounter: "employee" }, { name: "客户管理", rounter: "client" }, { name: "操作日志", rounter: "log" }], color: "green"
-        }];
+          { name: "用户管理", rounter: "employee" }, { name: "公司信息", rounter: "factory" }, { name: "操作日志", rounter: "log" }], color: "green"
+        }]; 
         break;
       default:
         // code...
@@ -74,5 +74,10 @@ export class HomeComponent implements OnInit {
   }
   gotoLogin() {
     this.router.navigate(['login']);
+  }
+
+  @HostListener('window:resize',['$event'])
+  onResize(event){
+      console.log(event); 
   }
 }

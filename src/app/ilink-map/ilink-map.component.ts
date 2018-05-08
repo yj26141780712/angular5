@@ -144,7 +144,7 @@ export class IlinkMapComponent implements OnInit {
         var count = res.boundaries.length;
         for (var i = 0; i < count; i++) {
           var ply = new BMap.Polygon(res.boundaries[i], { strokeWeight: 1, strokeColor: "#0375ff", fillOpacity: 1, enableMassClear: true });//建立多边形
-           map.addOverlay(ply);//添加覆盖物
+          map.addOverlay(ply);//添加覆盖物
           //map.setViewport(ply.getPath());//调整视野
         }
       })
@@ -278,7 +278,7 @@ export class IlinkMapComponent implements OnInit {
             },
             series: [
               {
-                name:'机器类型占比',
+                name: '机器类型占比',
                 type: 'pie',
                 radius: ['45%', '60%'],
                 label: {
@@ -299,6 +299,11 @@ export class IlinkMapComponent implements OnInit {
             ]
           };
           run_m.setOption(option);
+        } else {
+          let m_propo_ech = <HTMLDivElement>document.getElementById('m_propo_ech');
+          var run_m = echarts.init(m_propo_ech);
+          run_m.dispose();
+          m_propo_ech.innerHTML = `<span>${data.message}</span>`;
         }
       });
   }
