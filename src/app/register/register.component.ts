@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
 
   info = {
     factory: "",
-    userName: "",
+    username: "",
     password: "",
     passwordRe: ""
   }
@@ -47,11 +47,15 @@ export class RegisterComponent implements OnInit {
   }
 
   checkUserName(value) {
-    let url = Global.domain + "";
-    this.gs.httpGet(url, { userName: value }, json => {
-      if (json.code == 200) {
-        this.isUserNameRepeat = true;
-      }
-    });
+    if (value) {
+      this.isUserNameRepeat = false;
+      let url = Global.domain + "except/isUserNameRepeat.action?userName=" + value;
+      this.gs.httpPost(url, {}, json => {
+        if (json.code == 202) {
+          this.isUserNameRepeat = true;
+        }
+      });
+    }
+
   }
 }

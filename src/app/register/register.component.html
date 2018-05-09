@@ -16,10 +16,10 @@
       </span>
     </div>
     <div class="form-group">
-      <input id="userName" required [(ngModel)]="info.userName" name="userName" type="text" class="form-control" placeholder="登录用户名"
-        #userName="ngModel" (blur)="checkUserName(userName.value)">
+      <input id="username" required [(ngModel)]="info.username" name="username" type="text" class="form-control" placeholder="登录用户名"
+        #username="ngModel" (blur)="checkUserName(username.value)">
       <i class="fa fa-user"></i>
-      <span class="text-danger" *ngIf="userName.invalid&&(userName.dirty || userName.touched)">
+      <span class="text-danger" *ngIf="username.invalid&&(username.dirty || username.touched)">
         用户名不能为空!
       </span>
       <span class="text-danger" *ngIf="isUserNameRepeat">

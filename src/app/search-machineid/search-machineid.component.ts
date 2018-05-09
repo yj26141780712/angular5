@@ -53,7 +53,6 @@ export class SearchMachineidComponent implements OnInit {
             this.detail_Machine.out_date = data.ddate != null ? data.ddate.substring(0, 10) : "暂无";
             this.detail_Machine.province = data.city;
             this.detail_Machine.position = data.road;
-            console.log(data.monitorid);
             this.monitoridEvent.emit(data.monitorid);
           }
         })
@@ -151,6 +150,7 @@ export class SearchMachineidComponent implements OnInit {
     this.http.get(Global.domain + 'api/apideviceList.action').subscribe((res) => {
       //根据companyid筛选
       this.companyid = localStorage.getItem('companyid');
+
       var array = [];
       for (var i = 0; i < res.json().obj.length; i++) {
         if (res.json().obj[i].companyid == this.companyid || !this.companyid) {
@@ -158,7 +158,7 @@ export class SearchMachineidComponent implements OnInit {
         }
       }
       this.data = [].concat(array);
-      callback();
+      callback();  
     })
   }
   //数据变化
@@ -220,7 +220,6 @@ export class SearchMachineidComponent implements OnInit {
           }
         }
         swal.close();
-
       })
     }
   }

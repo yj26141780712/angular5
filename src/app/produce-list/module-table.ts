@@ -9,8 +9,8 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { FittingComponent } from '../file-management/fitting/fitting.component';
 
 //update by yangjie 修改页面显示 20180427
-//注塑机管理
-//片区管理
+//注塑机管理 <i class="fa fa-cogs" aria-hidden="true" title="设备配件" (click)='setFitting(num)'></i>
+//片区管理 <i class="fa fa-cogs" aria-hidden="true" title="配置拥有机型" (click)='setMachine(num)'></i>
 @Component({
   selector: 'module-table',
   template: `
@@ -35,9 +35,9 @@ import { FittingComponent } from '../file-management/fitting/fitting.component';
       <tbody>
         <tr *ngFor="let content of page_data;let num=index">
           <td *ngFor='let attr of module_table_attr'>{{content[attr]}}</td>
-          <td *ngSwitchCase="'machine'" class="machine"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editMachine(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="delMachine(num)"></i><i class="fa fa-cogs" aria-hidden="true" title="设备配件" (click)='setFitting(num)'></i><i class="fa fa-usd" aria-hidden="true" title="指定工厂" (click)='setCompany(num)'></i></td>
+          <td *ngSwitchCase="'machine'" class="machine"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editMachine(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="delMachine(num)"></i><i class="fa fa-usd" aria-hidden="true" title="指定工厂" (click)='setCompany(num)'></i></td>
           <td *ngSwitchCase="'area'"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editArea(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="delArea(num)"></i></td>
-          <td *ngSwitchCase="'company'"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editCompany(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="deleteCompany(num)"></i><i class="fa fa-cogs" aria-hidden="true" title="配置拥有机型" (click)='setMachine(num)'></i><i class="fa fa-user" aria-hidden="true" title="配置管理员账号" (click)='setAdmin(num)'></i></td>
+          <td *ngSwitchCase="'company'"><i class="fa fa-pencil" aria-hidden="true" title="编辑" (click)="editCompany(num)"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="deleteCompany(num)"></i><i class="fa fa-user" aria-hidden="true" title="配置管理员账号" (click)='setAdmin(num)'></i></td>
           <td *ngSwitchCase="'employee'"><i class="fa fa-pencil" aria-hidden="true" (click)="changeEmployee(num)" title="编辑"></i><i class="fa fa-power-off" *ngIf="content.state=='正常'" aria-hidden="true" (click)="stopEmployee(num)" title="停用"></i><i class="fa fa-power-off green" *ngIf="content.state=='停用'" aria-hidden="true" (click)="RunEmployee(num)" title="启用"></i><i class="fa fa-repeat" aria-hidden="true" title="重置密码" (click)="resetPsd(num)"></i></td>
           <td *ngSwitchCase="'client'"><i class="fa fa-pencil" aria-hidden="true" (click)="changeClient(num)" title="编辑"></i><i class="fa fa-trash" aria-hidden="true" title="删除" (click)="deleteClient(num)"></i></td>
         </tr>
@@ -93,7 +93,6 @@ export class ModuleTable implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.page_data);
     if (this.module_table_search != undefined) {
       document.getElementById('searchAttribute').setAttribute('placeholder', this.module_table_search.name);
     }
@@ -462,6 +461,7 @@ export class ModuleTable implements OnInit {
   }
   //修改用户
   changeEmployee(num) {
+    let roleid = this.page_data[num].roleid;
     var html = `
     <style>
        .EmployeeCha{font-size:16px;}
@@ -474,8 +474,8 @@ export class ModuleTable implements OnInit {
       <li><label>用户账号: </label><input type="text" id="clientid"/></li>
       <li><label>用户角色 </label>
       <select id="role">
-          <option value="1">机械厂总经理</option>
-          <option value="2">机械厂办事处</option>
+          <option value="2">机械厂总经理</option>
+          <option value="4">机械厂办事处</option>
         </select>
       </li>
       <li><label>用户姓名：</label><input type="text" id="name"/></li>
@@ -499,7 +499,7 @@ export class ModuleTable implements OnInit {
         var name = <HTMLInputElement>document.getElementById('name');
         name.value = this.page_data[num].username;
         var role = <HTMLInputElement>document.getElementById('role');
-        role.value = this.page_data[num].user_message == '机械厂总经理' ? "1" : "2";//存在管理员的不可编辑
+        role.value = this.page_data[num].user_message == '机械厂总经理' ? "2" : "4";//存在管理员的不可编辑
         var phone = <HTMLInputElement>document.getElementById('phone');
         phone.value = this.page_data[num].phone;
         var note = <HTMLInputElement>document.getElementById('note');
@@ -507,14 +507,20 @@ export class ModuleTable implements OnInit {
       }
     }).then((result) => {
       if (result.value) {
+        //var id = localStorage.getItem("id");
+        console.log(this.page_data[num]);
         var userid = <HTMLInputElement>document.getElementById('clientid');
         var name = <HTMLInputElement>document.getElementById('name');
         var role = <HTMLInputElement>document.getElementById('role');
         var phone = <HTMLInputElement>document.getElementById('phone');
         var note = <HTMLInputElement>document.getElementById('note');
-        console.log(userid.value, name.value, role.value, phone.value, note.value);
-        this.http.get(this.url + 'apiuserEdit.action?user.password=' + this.page_data[num].password + '&user.username=' + userid.value + '&user.roleid=' + role.value + '&user.name=' + name.value + '&user.phone=' + phone.value + '&user.note=' + note.value).subscribe((res: Response) => {
-          console.log(res.json());
+        console.log(role.value.toString(), role.value.toString() != "2");
+        let roleId = this.page_data[num].roleid == "2" || this.page_data[num].roleid == "4" ?
+          role.value.toString() : this.page_data[num].roleid;
+        //roleId = roleId || role.value;
+        //console.log(roleId); 
+        this.http.get(this.url + 'apiuserEdit.action?user.password=' + this.page_data[num].password + '&user.username=' + userid.value + '&user.roleid=' + roleId + '&user.name=' + name.value + '&user.phone=' + phone.value + '&user.note=' + note.value + '&user.id=' + this.page_data[num].id).subscribe((res: Response) => {
+          //console.log(res.json());
           if (res.json().code == 200) {
             this.EmployeeEvent.emit("ok");
           }
@@ -681,34 +687,36 @@ export class ModuleTable implements OnInit {
       confirmButtonText: '保存',
       cancelButtonText: '取消',
       position: 'top',
-      onOpen: () => {
-        //获取账号Global.domain+'/api/apifindAdmin.action?companyId=当前工厂的id
+      // onOpen: () => {
+      //   //获取账号Global.domain+'/api/apifindAdmin.action?companyId=当前工厂的id
+      //   var username = <HTMLInputElement>document.getElementById('userName');
+      //   var Name = <HTMLInputElement>document.getElementById('name');
+      //   var phone = <HTMLInputElement>document.getElementById('phone');
+      //   var notes = <HTMLInputElement>document.getElementById('notes');
+      //   var id = document.getElementById('userid');
+      //   this.http.get(this.url + 'apifindAdmin.action?companyId=' + this.page_data[num].id).subscribe((res: Response) => {
+      //     if (res.json().code == 200) {
+      //       console.log(res.json());
+      //       username.value = res.json().obj.username;
+      //       Name.value = res.json().obj.name;
+      //       phone.value = res.json().obj.phone;
+      //       notes.value = res.json().obj.note;
+      //       id.innerText = res.json().obj.id;
+      //     }
+      //   })
+      // }
+    }).then((result) => {
+      console.log(result);
+      if (result.value) {
+
+        //var userid = <HTMLInputElement>document.getElementById('userid');
         var username = <HTMLInputElement>document.getElementById('userName');
         var Name = <HTMLInputElement>document.getElementById('name');
         var phone = <HTMLInputElement>document.getElementById('phone');
         var notes = <HTMLInputElement>document.getElementById('notes');
-        var id = document.getElementById('userid');
-        this.http.get(this.url + 'apifindAdmin.action?companyId=' + this.page_data[num].id).subscribe((res: Response) => {
-          if (res.json().code == 200) {
-            console.log(res.json());
-            username.value = res.json().obj.username;
-            Name.value = res.json().obj.name;
-            phone.value = res.json().obj.phone;
-            notes.value = res.json().obj.note;
-            id.innerText = res.json().obj.id;
-          }
-        })
-      }
-    }).then((result) => {
-
-      if (result.value) {
-        var userid = <HTMLInputElement>document.getElementById('userid');
-        var username = <HTMLInputElement>document.getElementById('companyName');
-        var Name = <HTMLInputElement>document.getElementById('companyAddress');
-        var phone = <HTMLInputElement>document.getElementById('phone');
-        var notes = <HTMLInputElement>document.getElementById('notes');
-        this.http.get(this.url + 'apieditAdmin.action?user.id=' + userid.innerText + '&user.username=' + username.value + '&user.name=' + Name.value + '&user.note=' + notes.value + '&user.phone' + phone.value + '=&user.companyid=' + this.page_data[num].id).subscribe((res: Response) => {
-          //console.log(res.json());
+        console.log(username.value, Name.value, phone.value, notes.value);
+        this.http.get(this.url + 'apieditAdmin.action?user.username=' + username.value + '&user.name=' + Name.value + '&user.note=' + notes.value + '&user.phone' + phone.value + '=&user.companyid=' + this.page_data[num].id).subscribe((res: Response) => {
+          console.log(res.json());
           if (res.json().code == 200) {
             this.MachineEvent.emit("ok");
           }
@@ -719,25 +727,35 @@ export class ModuleTable implements OnInit {
 
   //新增注塑机
   addMachine() {  //add by yangjie 20180427 修改下拉框
-    let _url_model = "";
+    let _url_model = this.url + "apifindModelsByCompany.action?companyId=" + this.companyid;
     let _url_company = this.url + "apicompanys.action?companyId=" + this.companyid;
     let _url_area = this.url + "apiareas.action?companyid=" + this.companyid;
+    let _data_model = null;
     let _data_company = null;
     let _data_area = null;
+    this.http.get(_url_model).subscribe(res => {
+      _data_model = res.json().obj;
+      this.addMachineBack(_data_model, _data_area, _data_company);
+    });
     this.http.get(_url_area).subscribe(res => {
       _data_area = res.json().obj;
-      this.addMachineBack(_data_area, _data_company);
+      this.addMachineBack(_data_model, _data_area, _data_company);
     });
     this.http.get(_url_company).subscribe(res => {
       _data_company = res.json().obj;
-      this.addMachineBack(_data_area, _data_company);
+      this.addMachineBack(_data_model, _data_area, _data_company);
     });
+
   }
 
-  addMachineBack(data_area, data_company) {
-    if (data_area && data_company) {
+  addMachineBack(data_model, data_area, data_company) {
+    if (data_model && data_area && data_company) {
+      let _option_model = '';
       let _option_area = '';
       let _option_company = '';
+      for (const obj of data_model) {
+        _option_model += `<option value="${obj.id}">${obj.name}</option>`;
+      }
       for (const obj of data_area) {
         if (obj.companyid == this.companyid) {
           _option_area += `<option value="${obj.id}">${obj.name}</option>`;
@@ -760,8 +778,7 @@ export class ModuleTable implements OnInit {
       <li><label>注塑机名称：</label><input type="text" id="MName" placeholder="注塑机名称"/></li>
       <li><label>注塑机类型：</label>
         <select id="status">
-          <option value="120">328类型</option>
-          <option value="140">全电</option>
+        ${_option_model}
         </select>
       </li>
       <li><label>采集器编号：</label><input type="text" id="moniter" placeholder="采集器编号："/></li>
@@ -849,34 +866,42 @@ export class ModuleTable implements OnInit {
   }
   //编辑   //add by yangjie 20180427
   editMachine(num) {
-    let _url_model = "";
+    let _url_model = this.url + "apifindModelsByCompany.action?companyId=" + this.companyid;
     let _url_company = this.url + "apicompanys.action?companyId=" + this.companyid;
     let _url_area = this.url + "apiareas.action?companyid=" + this.companyid;
+    let _data_model = null;
     let _data_company = null;
     let _data_area = null;
+    this.http.get(_url_model).subscribe(res => {
+      _data_model = res.json().obj;
+      this.editMachineBcck(num, _data_model, _data_area, _data_company);
+    });
     this.http.get(_url_area).subscribe(res => {
       _data_area = res.json().obj;
-      this.editMachineBcck(num, _data_area, _data_company);
+      this.editMachineBcck(num, _data_model, _data_area, _data_company);
     });
     this.http.get(_url_company).subscribe(res => {
       _data_company = res.json().obj;
-      this.editMachineBcck(num, _data_area, _data_company);
+      this.editMachineBcck(num, _data_model, _data_area, _data_company);
     });
   }
 
-  editMachineBcck(num, data_area, data_company) { //add by yangjie 20180427 
-    if (data_area && data_company) {
+  editMachineBcck(num, data_model, data_area, data_company) { //add by yangjie 20180427 
+    if (data_model && data_area && data_company) {
       let _machine = this.page_data[num];
+      let _option_model = '';
       let _option_area = '';
       let _option_company = '';
+      for (const obj of data_model) {
+        console.log(obj, _machine);
+        _option_model += `<option value="${obj.id}" ${obj.name == _machine.m_type ? "selected='selected'" : ""} >${obj.name}</option>`;
+      }
       for (const obj of data_area) {
         if (obj.companyid == this.companyid) {
-          console.log(obj.name, _machine.area);
           _option_area += `<option value="${obj.id}" ${obj.name == _machine.area ? "selected='selected'" : ""} >${obj.name}</option>`;
         }
       }
       for (const obj of data_company) {
-        console.log(obj,_machine);
         _option_company += `<option value="${obj.id}" ${obj.name == _machine.d_company ? "selected='selected'" : ""} >${obj.name}</option>`;
       }
       var html =
@@ -893,8 +918,7 @@ export class ModuleTable implements OnInit {
       <li><label>注塑机名称：</label><input type="text" id="MName" placeholder="注塑机名称" value='${_machine.m_name}' /></li>
       <li><label>注塑机类型：</label>
         <select id="status">
-          <option value="120">328类型</option>
-          <option value="140">全电</option>
+          ${_option_model}
         </select>
       </li>
       <li><label>采集器编号：</label><input type="text" id="moniter" placeholder="采集器编号：" value='${_machine.c_id}' /></li>
@@ -974,11 +998,11 @@ export class ModuleTable implements OnInit {
               this.MachineEvent.emit("ok");
             }
           })
-          this.gs.httpGet(_url, {}, json => {
-            if (json.code == 200) {
-              this.MachineEvent.emit("ok"); 
-            }
-          })
+          // this.gs.httpGet(_url, {}, json => {
+          //   if (json.code == 200) {
+          //     this.MachineEvent.emit("ok");
+          //   }
+          // })
         }
       })
     }
