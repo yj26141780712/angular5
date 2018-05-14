@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
     let lasTime = localStorage.getItem('lastTime') ? Number(localStorage.getItem('lastTime')) : 0;
     let spanTime = nowTime - lasTime;
     let allTime = 10 * 24 * 60 * 60 * 1000;
-    console.log(lasTime, spanTime);
     if (spanTime < allTime && lasTime > 0) {
       this.router.navigate(['/home']);//跳转 { queryParams: { type: "autoLogin" } } 
     }

@@ -37,7 +37,6 @@ export class AreaManagement implements OnInit {
   getAreaData(callback) {
     this.http.request(Global.domain + 'api/apiareas.action?companyId=' + this.companyid)
       .subscribe((res: Response) => {
-        console.log(res.json());
         this.areaData = res.json().obj;
         callback();
       })

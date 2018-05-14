@@ -157,7 +157,7 @@ export class TimeDataComponent implements OnInit {
   }
   getstatusData() {//接口有问题
     this.http.get(Global.domain + 'api/remoteproductData.action?mid=' + this.midId + '&mtime=1&').subscribe((res: Response) => {
-      console.log(res.json().obj);
+
     })
   }
   /**
@@ -165,7 +165,6 @@ export class TimeDataComponent implements OnInit {
    */
   getTempData() {
     this.http.get(Global.domain + 'api/deviceTemp.action?mid=' + this.midId).subscribe((res: Response) => {
-      console.log('料筒温度',res.json());
       var data = res.json().obj.params;
       this.temperatureData = [].concat();
       if (res.json().code == 200) {

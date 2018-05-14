@@ -60,7 +60,6 @@ export class ShutDown implements OnInit {
         this.warning=true;
         this.msg=res.json().msg;
       }
-      console.log(res.json());
     })
   }
   //select的change事件
@@ -97,13 +96,11 @@ export class ShutDown implements OnInit {
           this.openMessage.curr=num.value;
           this.openMessage.count=dayNum;
         }
-        console.log(res.json());
     })
   }
   //提交解码信息
   sendOpenMessage(code){
     this.http.get(Global.domain+'api/remotesendCode.action?mid='+this.current_mid+'&code='+code.value).subscribe((res:Response)=>{
-      console.log(res.json());
       if(res.json().code==200)
       {
         this.success=true;

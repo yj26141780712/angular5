@@ -38,7 +38,6 @@ export class RegisterComponent implements OnInit {
 
   register() {
     let url = Global.domain + "api/apiaddFactory.action";
-    console.log(url);
     this.gs.httpGet(url, this.info, json => {
       if (json.code == 200) {
         this.bsModalRef.hide();

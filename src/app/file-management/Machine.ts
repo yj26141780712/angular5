@@ -21,16 +21,12 @@ export class Machine implements OnInit {
 
   }
   getMachineData(callback) {
-    this.http.get(Global.domain + 'api/apideviceList.action').subscribe((res: Response) => {
-
+    this.http.get(Global.domain + 'api/apideviceList.action?companyId=' + this.companyid || '').subscribe((res: Response) => {
       var array = [];
       for (var i = 0; i < res.json().obj.length; i++) {
-        if (res.json().obj[i].companyid == this.companyid || !this.companyid) {
-          array.push(res.json().obj[i]);
-        }
+        array.push(res.json().obj[i]);
       }
       this.data = [].concat(array);
-      console.log(this.data);
       callback();
     })
   }
@@ -61,7 +57,6 @@ export class Machine implements OnInit {
   }
   getResult(msg) {
     this.getMachineData(() => {
-      console.log(this.data);
       var array = [];
       for (var i = 0; i < this.data.length; i++) {
         var item = { m_id: "", m_name: "", m_type: "", c_id: "", o_name: "", o_date: "", area: "", o_company: "", d_company: "", s_company: "", remarks: "", id: "", x: "", y: "" };
@@ -69,7 +64,7 @@ export class Machine implements OnInit {
         item.m_name = this.data[i].name;
         item.m_type = this.data[i].modelName;
         item.c_id = this.data[i].monitorid;
-        item.o_name =this.data[i].cpersonnel || ''; //add by yangjie 20180504
+        item.o_name = this.data[i].cpersonnel || ''; //add by yangjie 20180504
         if (this.data[i].ddate != null) {
           item.o_date = this.data[i].ddate.substring(0, 10);
         }

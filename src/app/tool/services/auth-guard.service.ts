@@ -10,7 +10,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     return true;
   }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
-    console.log('此处校验模块权限等!');
     return true;
     //throw new Error("Method not implemented.");
   }

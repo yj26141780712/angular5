@@ -18,8 +18,8 @@ export class SmoothMessage implements OnInit {
   module_table_search = { search: "m_name", name: "设备名" }
   module_table_attr: Array<string> = ['m_name', 'count', 'stime', 'etime', 'component', 'remarks'];
   constructor(private http: Http) {
-    let time = '2018-05-03T00:00:00';
-    console.log(moment(time).format("YYYY-MM-DD HH:mm:ss"))
+    // let time = '2018-05-03T00:00:00';
+    // console.log(moment(time).format("YYYY-MM-DD HH:mm:ss"))
   }
 
   ngOnInit() {
@@ -46,7 +46,6 @@ export class SmoothMessage implements OnInit {
   getSmoothData(callback) {
     //console.log(123);
     this.http.get(Global.domain + 'api/apismoothList.action?mid=' + this.current_mid).subscribe((res: Response) => {
-      console.log(this.current_mid);
       this.data = res.json().obj;
       callback();
     })

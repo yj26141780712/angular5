@@ -39,7 +39,6 @@ export class GlobalService {
         if (loader) {
             //开启加载效果
         }
-        console.log(url + this.encode(params));
         this.http.get(url + this.encode(params)).toPromise().then(res => {
             let json = res.json();
             if (loader) {
@@ -69,7 +68,6 @@ export class GlobalService {
                 if (loader) { 
                     //loading.dismiss();
                 }
-                console.log(error);
                 this.handleError(error);
             });
     }

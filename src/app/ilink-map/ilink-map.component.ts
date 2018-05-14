@@ -126,12 +126,10 @@ export class IlinkMapComponent implements OnInit {
         //查看详细
         $('.total_info>ul>li>a').click(function () {
           var monitor = $(this).parent().find('span').text();
-          console.log(monitor);
           that.router.navigate(['home/data'], { queryParams: { mid: monitor } });
         })
       }
     }
-    console.log(area);
     for (var i = 0; i < area.length; i++) {
       //console.log("我进循环了!");
       getBoundary(area[i]);
@@ -140,7 +138,6 @@ export class IlinkMapComponent implements OnInit {
     {
       var bdary = new BMap.Boundary();
       bdary.get(city, function (res) {
-        console.log(res);
         var count = res.boundaries.length;
         for (var i = 0; i < count; i++) {
           var ply = new BMap.Polygon(res.boundaries[i], { strokeWeight: 1, strokeColor: "#0375ff", fillOpacity: 1, enableMassClear: true });//建立多边形
@@ -163,7 +160,6 @@ export class IlinkMapComponent implements OnInit {
    * @param name 按钮名字
    */
   run_m(name: string) {
-    name = name || "day";
     this.http.get(Global.domain + "api/apilineChart.action?companyId=" + (this.company_id || '') + "&tag=" + name)
       .subscribe(res => {
         let data = res.json();
@@ -232,7 +228,6 @@ export class IlinkMapComponent implements OnInit {
    */
   typeSelect(name: string) {
     this.typeBtnSelect = name;
-    console.log(name);
     this.m_propor(name);
   }
   /**
@@ -240,11 +235,9 @@ export class IlinkMapComponent implements OnInit {
    * @param name 按钮名称
    */
   m_propor(name: string) {
-    console.log(this.company_id);
     this.http.get(Global.domain + "api/apipieChart.action?companyId=" + (this.company_id || '') + "&tag=" + name)
       .subscribe(res => {
         let data = res.json();
-        console.log(data);
         if (data.code == 200) {
           let pieData = [];
           let legendData = [];
@@ -262,7 +255,6 @@ export class IlinkMapComponent implements OnInit {
             legendData.push(obj.label);
             //colorData.push(obj.color);
           }
-          console.log(pieData);
           let m_propo_ech = <HTMLDivElement>document.getElementById('m_propo_ech');
           var run_m = echarts.init(m_propo_ech);
           var option = {
@@ -308,15 +300,13 @@ export class IlinkMapComponent implements OnInit {
       });
   }
   getBaiduMap(callback) {
-    this.http.get(Global.domain + 'api/apideviceList.action').subscribe((res: Response) => {
+    this.http.get(Global.domain + 'api/apideviceList.action?companyId=' + this.company_id || '').subscribe((res: Response) => {
       var Mdata: any = [];
       for (var i = 0; i < res.json().obj.length; i++) {
-        if (res.json().obj[i].companyid == this.company_id || !this.company_id) { //add by yangjie 20180426  || !this.company_id
-          if (res.json().obj[i].workstate == "全自动" || res.json().obj[i].workstate == "半自动" || res.json().obj[i].workstate == "时间自动" || res.json().obj[i].workstate == "电眼自动") {
-            this.MachineCount.running++;
-          }
-          Mdata.push(res.json().obj[i]);
+        if (res.json().obj[i].workstate == "全自动" || res.json().obj[i].workstate == "半自动" || res.json().obj[i].workstate == "时间自动" || res.json().obj[i].workstate == "电眼自动") {
+          this.MachineCount.running++;
         }
+        Mdata.push(res.json().obj[i]);
         //Machine_run
         //Machine_pro
       }
@@ -344,18 +334,19 @@ export class IlinkMapComponent implements OnInit {
       callback();
     });
     this.http.get(Global.domain + 'api/apiareas.action?companyId=' + this.company_id).subscribe((res: Response) => {
-      for (var i = 0; i < res.json().obj.length; i++) {
-        if (res.json().obj[i] && res.json().obj[i].note) {
-          var array = [];
-          array = res.json().obj[i].note.split(',');
-          for (var j = 0; j < array.length; j++) {
-            this.area_array.push(array[j]);
+      if (res.json().code == 200) {
+        for (var i = 0; i < res.json().obj.length; i++) {
+          if (res.json().obj[i] && res.json().obj[i].note) {
+            var array = [];
+            array = res.json().obj[i].note.split(',');
+            for (var j = 0; j < array.length; j++) {
+              this.area_array.push(array[j]);
+            }
           }
         }
+        this.area_array = Array.from(new Set(this.area_array)); //add by yangjie 20180426 去重复
+        this.MachineCount.service = this.area_array.length;
       }
-      console.log(this.area_array);
-      this.area_array = Array.from(new Set(this.area_array)); //add by yangjie 20180426 去重复
-      this.MachineCount.service = this.area_array.length;
     })
   }
 }

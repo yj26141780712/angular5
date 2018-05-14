@@ -31,7 +31,7 @@ export class FittingComponent implements OnInit {
   constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit() {
-    console.log(this.machine);
+
   }
   /*分页部分 */
   sort(num) {

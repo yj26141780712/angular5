@@ -147,18 +147,15 @@ export class SearchMachineidComponent implements OnInit {
   }
   //接口
   getMachineID(callback) {
-    this.http.get(Global.domain + 'api/apideviceList.action').subscribe((res) => {
+    this.companyid = localStorage.getItem('companyid');
+    this.http.get(Global.domain + 'api/apideviceList.action?companyId=' + this.companyid || '').subscribe((res) => {
       //根据companyid筛选
-      this.companyid = localStorage.getItem('companyid');
-
       var array = [];
       for (var i = 0; i < res.json().obj.length; i++) {
-        if (res.json().obj[i].companyid == this.companyid || !this.companyid) {
-          array.push(res.json().obj[i]);
-        }
+        array.push(res.json().obj[i]);
       }
-      this.data = [].concat(array);
-      callback();  
+      this.data = [].concat(array); 
+      callback();
     })
   }
   //数据变化

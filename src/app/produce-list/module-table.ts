@@ -264,7 +264,7 @@ export class ModuleTable implements OnInit {
       <li><label>状态： </label>
         <select id="status">
           <option>停用</option>
-          <option>启用</option>
+          <option>正常</option>
         </select>
       </li>
     </ul>
@@ -285,7 +285,6 @@ export class ModuleTable implements OnInit {
         var name = <HTMLInputElement>document.getElementById('name');
         var status = <HTMLInputElement>document.getElementById('status');
         this.http.get(Global.domain + 'api/apisaveClient.action?client.id=&client.clientId=' + clientId.value + '&client.clientName=' + name.value + '&client.status=' + status.value + '&companyId=' + this.companyid).subscribe((res: Response) => {
-          console.log(res.json().code());
           if (res.json().code == 200) {
             this.ClientEvent.emit("ok");
           }
@@ -301,7 +300,6 @@ export class ModuleTable implements OnInit {
     let name = parent.getElementsByTagName('td')[1].innerText;
     let remark = parent.getElementsByTagName('td')[3].innerText;
     let status = parent.getElementsByTagName('td')[4].innerText;
-    console.log(parent);
     var html = `
     <style>
        .clientCha{font-size:16px;}
@@ -380,7 +378,7 @@ export class ModuleTable implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.http.get(this.url + 'apiuserStart.action?userId=' + this.page_data[num].id + '&companyId=' + this.companyid).subscribe((res: Response) => {
-          console.log(res.json());
+
           if (res.json().code == 200) {
             this.EmployeeEvent.emit("ok");
           }
@@ -401,7 +399,7 @@ export class ModuleTable implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.http.get(this.url + 'apiuserDel.action?userId=' + this.page_data[num].id + '&companyId=' + this.companyid).subscribe((res: Response) => {
-          console.log(res.json());
+
           if (res.json().code == 200) {
             this.EmployeeEvent.emit("ok");
           }
@@ -451,7 +449,7 @@ export class ModuleTable implements OnInit {
         var notes = <HTMLInputElement>document.getElementById('notes');
 
         this.http.get(this.url + 'apiuserAdd.action?user.username=' + Id.value + '&user.password=' + Password.value + '&user.roleid=' + role.value + '&user.name=' + username.value + '&user.phone=' + phone.value + '&user.note=' + notes.value + '&user.companyid=' + this.companyid).subscribe((res: Response) => {
-          console.log(res.json());
+
           if (res.json().code == 200) {
             this.EmployeeEvent.emit("ok");
           }
@@ -508,13 +506,12 @@ export class ModuleTable implements OnInit {
     }).then((result) => {
       if (result.value) {
         //var id = localStorage.getItem("id");
-        console.log(this.page_data[num]);
+
         var userid = <HTMLInputElement>document.getElementById('clientid');
         var name = <HTMLInputElement>document.getElementById('name');
         var role = <HTMLInputElement>document.getElementById('role');
         var phone = <HTMLInputElement>document.getElementById('phone');
         var note = <HTMLInputElement>document.getElementById('note');
-        console.log(role.value.toString(), role.value.toString() != "2");
         let roleId = this.page_data[num].roleid == "2" || this.page_data[num].roleid == "4" ?
           role.value.toString() : this.page_data[num].roleid;
         //roleId = roleId || role.value;
@@ -580,7 +577,6 @@ export class ModuleTable implements OnInit {
         var phone = <HTMLInputElement>document.getElementById('phone');
         var notes = <HTMLInputElement>document.getElementById('notes');
         this.http.get(this.url + 'apicompanyAdd.action?companyId=' + this.companyid + '&company.name=' + Name.value + '&company.address=' + address.value + '&company.phone=' + phone.value + '&company.note=' + notes.value).subscribe((res: Response) => {
-          console.log(res.json());
           if (res.json().code == 200) {
             this.CompanyEvent.emit("ok");
           }
@@ -601,7 +597,6 @@ export class ModuleTable implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.http.get(this.url + 'apicompanyDel.action?companyId=' + this.companyid + '&delCompanyId=' + this.page_data[num].id).subscribe((res: Response) => {
-          console.log(res.json());
           if (res.json().code == 200) {
             this.CompanyEvent.emit("ok");
           }
@@ -651,7 +646,6 @@ export class ModuleTable implements OnInit {
         var phone = <HTMLInputElement>document.getElementById('phone');
         var notes = <HTMLInputElement>document.getElementById('notes');
         this.http.get(this.url + 'apicompanyEdit.action?company.id=' + this.page_data[num].id + '&company.name=' + Name.value + '&company.address=' + address.value + '&company.phone=' + phone.value + '&company.note=' + notes.value).subscribe((res: Response) => {
-          console.log(res.json());
           if (res.json().code == 200) {
             this.CompanyEvent.emit("ok");
           }
@@ -676,7 +670,7 @@ export class ModuleTable implements OnInit {
       <li><label>用户姓名：</label><input type="text" id="name" placeholder="用户姓名"/></li>
       <li><label>联系电话：</label><input type="text" id="phone" placeholder="联系电话" /></li>
       <li><label>备注信息：</label><input type="text" id="notes" placeholder="备注信息" /></li>
-      <li class="hidden" id="userid"></li>
+      <li class="hidden" ><input type="text" id="userid" /> </li>
     </ul>`;
     swal({
       title: "管理员账号",
@@ -687,36 +681,31 @@ export class ModuleTable implements OnInit {
       confirmButtonText: '保存',
       cancelButtonText: '取消',
       position: 'top',
-      // onOpen: () => {
-      //   //获取账号Global.domain+'/api/apifindAdmin.action?companyId=当前工厂的id
-      //   var username = <HTMLInputElement>document.getElementById('userName');
-      //   var Name = <HTMLInputElement>document.getElementById('name');
-      //   var phone = <HTMLInputElement>document.getElementById('phone');
-      //   var notes = <HTMLInputElement>document.getElementById('notes');
-      //   var id = document.getElementById('userid');
-      //   this.http.get(this.url + 'apifindAdmin.action?companyId=' + this.page_data[num].id).subscribe((res: Response) => {
-      //     if (res.json().code == 200) {
-      //       console.log(res.json());
-      //       username.value = res.json().obj.username;
-      //       Name.value = res.json().obj.name;
-      //       phone.value = res.json().obj.phone;
-      //       notes.value = res.json().obj.note;
-      //       id.innerText = res.json().obj.id;
-      //     }
-      //   })
-      // }
-    }).then((result) => {
-      console.log(result);
-      if (result.value) {
-
-        //var userid = <HTMLInputElement>document.getElementById('userid');
+      onOpen: () => {
+        //获取账号Global.domain+'/api/apifindAdmin.action?companyId=当前工厂的id
         var username = <HTMLInputElement>document.getElementById('userName');
         var Name = <HTMLInputElement>document.getElementById('name');
         var phone = <HTMLInputElement>document.getElementById('phone');
         var notes = <HTMLInputElement>document.getElementById('notes');
-        console.log(username.value, Name.value, phone.value, notes.value);
-        this.http.get(this.url + 'apieditAdmin.action?user.username=' + username.value + '&user.name=' + Name.value + '&user.note=' + notes.value + '&user.phone' + phone.value + '=&user.companyid=' + this.page_data[num].id).subscribe((res: Response) => {
-          console.log(res.json());
+        var id = <HTMLInputElement>document.getElementById('userid');
+        this.http.get(this.url + 'apifindAdmin.action?companyId=' + this.page_data[num].id).subscribe((res: Response) => {
+          if (res.json().code == 200) {
+            username.value = res.json().obj.username;
+            Name.value = res.json().obj.name;
+            phone.value = res.json().obj.phone;
+            notes.value = res.json().obj.note;
+            id.value = res.json().obj.id;
+          }
+        })
+      }
+    }).then((result) => {
+      if (result.value) {
+        var username = <HTMLInputElement>document.getElementById('userName');
+        var Name = <HTMLInputElement>document.getElementById('name');
+        var phone = <HTMLInputElement>document.getElementById('phone');
+        var notes = <HTMLInputElement>document.getElementById('notes');
+        var id = <HTMLInputElement>document.getElementById('userid');
+        this.http.get(this.url + 'apieditAdmin.action?user.username=' + username.value + '&user.name=' + Name.value + '&user.note=' + notes.value + '&user.phone=' + phone.value + '&user.companyid=' + this.page_data[num].id + '&user.id=' + id.value).subscribe((res: Response) => {
           if (res.json().code == 200) {
             this.MachineEvent.emit("ok");
           }
@@ -829,7 +818,7 @@ export class ModuleTable implements OnInit {
           var GPS = <HTMLInputElement>document.getElementById('GPS');
           var remarks = <HTMLInputElement>document.getElementById('remarks');
           this.http.get(this.url + 'apideviceAdd.action?device.sn=' + Mid.value + '&device.name=' + MName.value + '&device.modelid=' + Mtype.value + '&device.monitorid=' + moniter.value + '&device.cpersonnel=' + out_name.value + '&device.ddate=' + out_date.value + '&device.proxyid=' + proxy_com.value + '&device.areaid=' + area.value + '&device.gps=' + GPS.value + '&device.note=' + remarks.value + '&device.companyid=' + this.companyid + '&device.luser=' + userid).subscribe((res: Response) => {
-            console.log(res.json());
+
             if (res.json().code == 200) {
               this.MachineEvent.emit("ok");
             }
@@ -841,7 +830,6 @@ export class ModuleTable implements OnInit {
 
   //删除注塑机
   delMachine(num) {
-    console.log(num, this.page_data[num].id, this.companyid);
     swal({
       title: "确定删除么？",
       type: "warning",
@@ -853,10 +841,10 @@ export class ModuleTable implements OnInit {
     }).then((result) => {
       if (result.value) {
         let _url = this.url + 'apideviceDel.action?companyId=' + this.companyid + '&deviceId=' + this.page_data[num].id;
-        console.log(_url, result);
+
         this.http.get(_url)
           .subscribe(res => {
-            console.log(res.json());
+
             if (res.json().code == 200) {
               this.MachineEvent.emit("ok");
             }
@@ -893,7 +881,7 @@ export class ModuleTable implements OnInit {
       let _option_area = '';
       let _option_company = '';
       for (const obj of data_model) {
-        console.log(obj, _machine);
+
         _option_model += `<option value="${obj.id}" ${obj.name == _machine.m_type ? "selected='selected'" : ""} >${obj.name}</option>`;
       }
       for (const obj of data_area) {
@@ -992,7 +980,6 @@ export class ModuleTable implements OnInit {
             + `&device.note=${remarks.value}&device.gps=${GPS.value}`
             + `&device.companyid=${this.companyid}&device.luser=${userid}`
             + `&device.id=${_machine.id}`;
-          console.log(_url);
           this.http.get(_url).subscribe(res => {
             if (res.json().code == 200) {
               this.MachineEvent.emit("ok");
@@ -1024,10 +1011,10 @@ export class ModuleTable implements OnInit {
       .subscribe(res => {
         let _json = res.json();
         if (_json.code == 200) {
-          console.log(_json);
+
           let _factory = "";
           for (let obj of res.json().obj) {
-            _factory += `<option value="${obj.clientId}">${obj.clientName}</option>`;
+            _factory += `<option value="${obj.clientId}" ${_machine.s_company == obj.clientName ? "selected='selected'" : ""}>${obj.clientName}</option>`;
           }
           let _html = `<style>
           .saleFactory {font-size:16px;}
@@ -1051,7 +1038,16 @@ export class ModuleTable implements OnInit {
             position: 'center'
           }).then(result => {
             if (result.value) {
+              let proxy_com = <HTMLInputElement>document.getElementById("proxy_com");
 
+              this.gs.httpGet(this.url + 'apideviceEdit.action', {
+                'device.id': _machine.id,
+                'device.companyid': this.companyid,
+                'device.factoryid': proxy_com.value,
+              }, json => {
+
+                this.MachineEvent.emit('ok');
+              });
             }
           })
         }
@@ -1086,7 +1082,7 @@ export class ModuleTable implements OnInit {
         var areaName = <HTMLInputElement>document.getElementById('areaName');
         var notes = <HTMLInputElement>document.getElementById('notes');
         this.http.get(this.url + 'apiareaAdd.action?area.companyid=' + this.companyid + '&area.name=' + areaName.value + '&area.note=' + notes.value).subscribe((res: Response) => {
-          console.log(res.json());
+
           if (res.json().code == 200) {
             this.AreaEvent.emit("ok");
           }
@@ -1128,9 +1124,9 @@ export class ModuleTable implements OnInit {
       if (result.value) {
         var areaName = <HTMLInputElement>document.getElementById('areaName');
         var notes = <HTMLInputElement>document.getElementById('notes');
-        console.log(this.companyid);
+
         this.http.get(this.url + 'apiareaEdit.action?area.id=' + this.page_data[num].id + '&area.companyid=' + this.companyid + '&area.name=' + areaName.value + '&area.note=' + notes.value).subscribe((res: Response) => {
-          console.log(res.json());
+
           if (res.json().code == 200) {
             this.AreaEvent.emit("ok");
           }
@@ -1151,7 +1147,7 @@ export class ModuleTable implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.http.get(Global.domain + 'api/apiareaDel.action?areaId=' + this.page_data[num].id).subscribe((res: Response) => {
-          console.log(res.json());
+
           this.AreaEvent.emit("ok");
         })
       }

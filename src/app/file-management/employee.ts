@@ -42,7 +42,6 @@ export class Employee implements OnInit {
   }
   getEmployee(callback) {
     this.http.get(Global.domain + 'api/apishowCompanyUsers.action?companyId=' + this.companyid).subscribe((res: Response) => {
-      console.log(res.json());
       this.data = res.json().obj;
       callback();
     })

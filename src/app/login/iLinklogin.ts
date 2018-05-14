@@ -32,7 +32,6 @@ export class iLinklogin implements OnInit {
     this.loginInfo.username = localStorage.getItem('username');
     this.loginInfo.password = localStorage.getItem('password');
     this.loginInfo.isAuto = localStorage.getItem('isAuto') && localStorage.getItem('isAuto') == "true";
-    console.log(this.loginInfo);
     $('body').height($(window).height());
     $('.login_view').hide();
     //自动登陆
@@ -41,7 +40,6 @@ export class iLinklogin implements OnInit {
   gotoMap() {
     this.http.get(Global.domain + 'api/apilogin?username=' + this.loginInfo.username + '&password=' + this.loginInfo.password).subscribe((res: Response) => {
       if (res.json().code == 200) {
-        console.log(res.json());
         localStorage.setItem('username', this.loginInfo.username);
         localStorage.setItem('password', this.loginInfo.password); // 缺少安全处理
         localStorage.setItem('isAuto', this.loginInfo.isAuto + '');

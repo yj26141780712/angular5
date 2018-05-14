@@ -39,8 +39,6 @@ export class Client implements OnInit {
   }
   getClientData(callback) {
     this.http.get(Global.domain + 'api/apishowClients.action?companyId=' + this.companyid).subscribe((res: Response) => {
-      console.log(this.companyid)
-      console.log(this.data);
       this.data = res.json().obj;
       callback();
     })

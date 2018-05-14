@@ -40,7 +40,6 @@ export class FactoryInfoComponent implements OnInit {
     this.gs.httpGet(url, {companyId:this.companyId}, json => {
       if (json.code == 200) {
         //此处加载company数据
-        console.log(json);
         this.myForm.reset(json.obj);
       }
     });

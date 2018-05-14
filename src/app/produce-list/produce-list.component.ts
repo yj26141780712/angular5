@@ -23,7 +23,6 @@ export class ProduceListComponent implements OnInit {
 
   ngOnInit() {
     this.getMachineCount(() => {
-      console.log(this.data);
       for (var i = 0; i < this.data.length; i++) {
         var item = { name: '', sn: "", workstate: "", action: "", motor: "", electricHeat: "", modelNum: "", totalNum: "", fulltime: "", workhour: "", className: "" }
         item.name = this.data[i].name;
@@ -59,19 +58,16 @@ export class ProduceListComponent implements OnInit {
     });
   }
   getMachineCount(callback): void {
-    this.http.request(Global.domain + 'api/apideviceList.action').subscribe((res: Response) => {
+    this.companyid = localStorage.getItem('companyid');
+    //console.log(this.companyid)
+    this.http.request(Global.domain + 'api/apideviceList.action?companyId=' + this.companyid || '').subscribe((res: Response) => {
       //根据companyid筛选
-      this.companyid = localStorage.getItem('companyid');
       var array = [];
       for (var i = 0; i < res.json().obj.length; i++) {
-        if (res.json().obj[i].companyid == this.companyid || !this.companyid) {
-          if (res.json().obj[i].workstate != "离线") array.push(res.json().obj[i]);
-        }
+        if (res.json().obj[i].workstate != "离线") array.push(res.json().obj[i]);
       }
       for (var i = 0; i < res.json().obj.length; i++) {
-        if (res.json().obj[i].companyid == this.companyid || !this.companyid) {
-          if (res.json().obj[i].workstate == "离线") array.push(res.json().obj[i]);
-        }
+        if (res.json().obj[i].workstate == "离线") array.push(res.json().obj[i]);
       }  // update by yangjie 2018-04-26 增加|| !this.companyid 优先显示非离线
       this.data = [].concat(array);
       callback();

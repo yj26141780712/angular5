@@ -39,7 +39,6 @@ export class SetMachineComponent implements OnInit {
     for (let obj of this.data) {
       obj.selected = select;
     }
-    console.log(this.data);
   }
  
   isAllCheck(){
@@ -53,7 +52,6 @@ export class SetMachineComponent implements OnInit {
 
   selectOne(select, item) {
     item.selected = select;
-    console.log(this.data);
   }
 
   isCheck(item){

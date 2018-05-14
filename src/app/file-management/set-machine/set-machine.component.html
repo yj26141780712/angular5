@@ -22,7 +22,7 @@
           <td *ngFor="let key of settings.column | keys">
             <input *ngIf="settings.column[key].type=='checkbox'" type="checkbox" value="{{item[key]}}" 
               (click)="selectOne($event.target.checked,item)"
-              [checked]="isCheck(item)">
+              [checked]="isCheck(item)"> 
                {{!settings.column[key].type?item[key]:''}}
           </td>
         </tr>

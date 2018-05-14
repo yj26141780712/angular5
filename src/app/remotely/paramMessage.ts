@@ -237,7 +237,6 @@ export class ParamMessage implements OnInit {
   }
   getParamData() {
     this.http.get(Global.domain + 'api/deviceInfo.action?mid=' + this.current_mid).subscribe((res) => {
-      console.log(res.json());
       if (res.json().obj.modelName == '全电')//原来是全电 
       {
         this.normal = false;
@@ -256,7 +255,6 @@ export class ParamMessage implements OnInit {
               }
             }
           }
-          console.log(this.AllData);
         })
       } else if (res.json().obj.modelName == '328机型') {//普通机型
         this.normal = true;
